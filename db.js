@@ -6,7 +6,7 @@ db.pragma('foreign_keys = ON');
 
 db.exec(
     `
-    CREATE TABLE IF NOT EXISTS User (
+    CREATE TABLE IF NOT EXISTS Users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
         username TEXT NOT NULL,
@@ -19,7 +19,7 @@ db.exec(
 
 db.exec(
     `
-    CREATE TABLE IF NOT EXISTS Book (
+    CREATE TABLE IF NOT EXISTS Books (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         year INTEGER NOT NULL,
@@ -34,7 +34,7 @@ db.exec(
 
 db.exec(
     `
-    CREATE TABLE IF NOT EXISTS Review (
+    CREATE TABLE IF NOT EXISTS Reviews (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         bookId INTEGER NOT NULL,
         userId INTEGER NOT NULL,
