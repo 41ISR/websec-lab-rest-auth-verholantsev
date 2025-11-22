@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken")
 const db = require("./db")
 const express = require("express")
 
-const salt = "secret-key"
 const SECRET = "this-is-for-JWT"
 
 const app = express()
@@ -11,11 +10,11 @@ const app = express()
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization
     if (!authHeader) res.status(401).json({error: "Нет токена авторизации"})
-
     if (!(authHeader.split(" ")[1])) res.status(401).json({error: "Неверный формат токена"})
 
     try {
         const token = authHeader.split(" ")[1]
+        
         const decoded = jwt.verify(token, SECRET)
         req.users = decoded
         next()
@@ -78,6 +77,40 @@ app.post("/api/auth/login", (req, res) => {
         const { password: p, ...response } = users
 
         res.status(200).json({ token: token, ...response })
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+app.get("/api/books", (_, res) => {
+    const data = db.prepare("SELECT * FROM books").all()
+    res.json(data)
+})
+
+app.get("/api/books/:id", (req, res) => {
+    const { id } = req.params
+    const data = db.prepare('SELECT * FROM books WHERE ID = ?').get(id)
+
+     if (!data) res.status(404).json({ error: "Неверный Id" })
+
+    res.json(data)
+})
+
+app.post("/api/books", authMiddleware, (req, res) => {
+    const { title, year, genre, description } = req.body
+
+    try {
+        if (!title || !year || !genre || !description) {
+            return res.status(400).json({ error: "Не хватает данных" })
+        }
+        const query = db.prepare(
+            `INSERT INTO books (title, year, genre, description, createdBy) VALUES (?, ?, ?, ?, ?)`
+        )
+        const info = query.run(title, year, genre, description, req.users.id)
+        const newBook = db
+            .prepare(`SELECT * FROM books WHERE ID = ?`)
+            .get(info.lastInsertRowid)
+        res.status(201).json(newBook)
     } catch (error) {
         console.error(error)
     }

@@ -27,7 +27,7 @@ db.exec(
         description TEXT NOT NULL,
         createdBy INTEGER NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (createdBy) REFERENCES User(id) ON DELETE CASCADE
+        FOREIGN KEY (createdBy) REFERENCES Users(id) ON DELETE CASCADE
     )
     `
 )
@@ -41,8 +41,8 @@ db.exec(
         rating INTEGER NOT NULL,
         comment TEXT NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (bookId) REFERENCES Book(id) ON DELETE CASCADE,
-        FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+        FOREIGN KEY (bookId) REFERENCES Books(id) ON DELETE CASCADE,
+        FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
     )
     `
 )
